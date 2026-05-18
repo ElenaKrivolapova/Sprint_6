@@ -1,6 +1,6 @@
-import time
 import allure
 
+from data import Urls
 from pages.main_page import MainPage
 
 
@@ -16,9 +16,9 @@ class TestLogo:
 
         page.click_scooter_logo()
 
-        current_url = driver.current_url
+        current_url = page.get_current_url()
 
-        assert 'qa-scooter.praktikum-services.ru' in current_url
+        assert Urls.MAIN_PAGE_URL == current_url
 
     @allure.title('Проверка перехода по логотипу Яндекса')
     def test_yandex_logo_redirect_to_dzen(self, driver):
@@ -29,13 +29,9 @@ class TestLogo:
         page.accept_cookies()
 
         page.click_yandex_logo()
+        page.switch_to_new_tab()
+        page.wait_for_url(Urls.DZEN_URL)
 
-        time.sleep(3)
+        current_url = page.get_current_url()
 
-        driver.switch_to.window(driver.window_handles[1])
-
-        time.sleep(3)
-
-        current_url = driver.current_url
-
-        assert 'dzen.ru' in current_url
+        assert Urls.DZEN_URL in current_url

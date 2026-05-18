@@ -6,17 +6,17 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
+from data import Urls
+
 
 class BasePage:
 
     def __init__(self, driver):
         self.driver = driver
 
-    MAIN_PAGE_URL = 'https://qa-scooter.praktikum-services.ru/'
-
     @allure.step('Открыть главную страницу')
     def open_main_page(self):
-        self.driver.get(self.MAIN_PAGE_URL)
+        self.driver.get(Urls.MAIN_PAGE_URL)
 
     @allure.step('Принять cookies')
     def accept_cookies(self):
@@ -27,7 +27,7 @@ class BasePage:
                 )
             )
             cookie_button.click()
-        except:
+        except Exception:
             pass
 
     @allure.step('Скролл до элемента')
@@ -69,3 +69,21 @@ class BasePage:
         WebDriverWait(self.driver, 10).until(
             expected_conditions.visibility_of_element_located(locator)
         ).send_keys(Keys.ENTER)
+
+    @allure.step('Переключиться на новую вкладку')
+    def switch_to_new_tab(self):
+        WebDriverWait(self.driver, 10).until(
+            lambda driver: len(driver.window_handles) > 1
+        )
+
+        self.driver.switch_to.window(self.driver.window_handles[1])
+
+    @allure.step('Получить текущий URL')
+    def get_current_url(self):
+        return self.driver.current_url
+    
+    @allure.step('Дождаться нужного URL')
+    def wait_for_url(self, url):
+        WebDriverWait(self.driver, 10).until(
+            expected_conditions.url_contains(url)
+        )

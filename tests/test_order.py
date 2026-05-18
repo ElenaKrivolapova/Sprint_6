@@ -56,10 +56,12 @@ class TestOrder:
         main_page.open_main_page()
         main_page.accept_cookies()
 
-        if order_button == 'top':
-            main_page.click_top_order_button()
-        else:
-            main_page.click_bottom_order_button()
+        button_actions = {
+            'top': main_page.click_top_order_button,
+            'bottom': main_page.click_bottom_order_button
+        }
+
+        button_actions[order_button]()
 
         order_page.fill_first_order_form(name, surname, address, metro, phone)
         order_page.fill_second_order_form(date, period, color, comment)
